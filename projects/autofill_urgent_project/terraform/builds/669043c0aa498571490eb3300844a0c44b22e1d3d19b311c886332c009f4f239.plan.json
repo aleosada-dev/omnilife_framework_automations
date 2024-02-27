@@ -1,0 +1,1 @@
+{"filename": "builds/669043c0aa498571490eb3300844a0c44b22e1d3d19b311c886332c009f4f239.zip", "runtime": "python3.11", "artifacts_dir": "builds", "build_plan": [["poetry", "python3.11", "..", null], ["zip", "..", null]]}

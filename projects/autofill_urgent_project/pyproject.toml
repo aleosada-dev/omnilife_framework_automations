@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "autofill_urgent_project"
+version = "0.1.0"
+description = ""
+authors = ["Alexandre Osada <alexandre.osada.dev@gmail.com>"]
+license = ""
+
+packages = [
+    { include = "omnilife_framework_automations/autofill_urgent_project_lambda", from = "../../bases" },
+    { include = "omnilife_framework_automations/project", from = "../../components" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
