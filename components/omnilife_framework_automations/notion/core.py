@@ -1,5 +1,4 @@
 import requests
-from pprint import pprint
 
 def query_pages(database_id: str, api_key: str):
 
@@ -10,20 +9,18 @@ def query_pages(database_id: str, api_key: str):
         raise ValueError("API key is empty or None") 
 
     headers = {
-        "Authorization": f"Bearer ${api_key}",
+        "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",
         "Notion-Version": "2022-06-28"
     }
 
     payload = {
-        "filter": {},
-        "sorts": []
+    #     "filter": {},
+    #     "sorts": []
     }
 
     response = requests.post(f"https://api.notion.com/v1/databases/{database_id}/query", headers=headers, json=payload)
     data = response.json()
-
-    pprint(data)
 
     # Process the data as per your requirements
     pages = data["results"]
