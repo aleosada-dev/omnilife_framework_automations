@@ -1,20 +1,14 @@
-import json
-from datetime import datetime
-from omnilife_framework_automations.project.entities import Project
+import os
+import pendulum
+from omnilife_framework_automations.project.automations import urgent_project_automation
 
 
 def lambda_handler(event, context):
-    p = Project(
-        id=1,
-        name="Project 1",
-        area="Area 1",
-        status="Not started",
-        start_date=datetime.now(),
-        end_date=datetime.now(),
-        created_at=datetime.now(),
-        last_edit_at=datetime.now(),
-    )
+    database_id = os.environ.get("NOTION_DATABASE_ID")
+    api_key = os.environ.get("NOTION_API_KEY")
+
+    urgent_project_automation(pendulum.now(), database_id, api_key)
+
     return {
-        'statusCode': 200,
-        'body': json.dumps(p)
+        "statusCode": 200,
     }
