@@ -36,3 +36,25 @@ def query_pages(database_id: str, api_key: str):
     # Process the data as per your requirements
     pages = data["results"]
     return pages
+
+
+def update_notion_page(page_id: str, properties: dict, api_key: str):
+    if page_id is None or page_id == "":
+        raise ValueError("Page ID is empty or None")
+
+    if api_key is None or api_key == "":
+        raise ValueError("API key is empty or None")
+
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+        "Notion-Version": "2022-06-28",
+    }
+    payload = {"properties": properties}
+    response = requests.patch(
+        f"https://api.notion.com/v1/pages/{page_id}",
+        headers=headers,
+        json=payload,
+    )
+    if response.status_code != 200:
+        raise ValueError("Failed to update Notion page")
