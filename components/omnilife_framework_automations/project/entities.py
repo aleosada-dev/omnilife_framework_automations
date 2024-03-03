@@ -1,3 +1,4 @@
+from omnilife_framework_automations.notion.core import safe_check_notion_date
 import pendulum
 from dataclasses import dataclass
 from enum import Enum
@@ -40,12 +41,6 @@ class Project:
     end_date: pendulum.DateTime
     created_at: pendulum.DateTime
     last_edit_at: pendulum.DateTime
-
-
-def safe_check_notion_date(page: dict, property_name: str) -> pendulum.DateTime | None:
-    if page["properties"][property_name]["date"] != None:
-        return pendulum.parse(page["properties"][property_name]["date"]["start"])
-    return None
 
 
 def project_page_to_class(page: dict) -> Project:

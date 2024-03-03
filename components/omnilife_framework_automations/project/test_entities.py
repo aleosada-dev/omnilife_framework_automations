@@ -5,7 +5,6 @@ from omnilife_framework_automations.project.entities import (
     ProjectStatus,
     ProjectSize,
     ProjectValue,
-    safe_check_notion_date,
     project_page_to_class,
     become_urgent,
 )
@@ -30,19 +29,6 @@ def sample_project_page():
         "created_time": "2022-01-01T00:00:00Z",
         "last_edited_time": "2022-01-01T00:00:00Z",
     }
-
-
-def test_safe_check_notion_date_with_valid_date(sample_project_page):
-    date = safe_check_notion_date(sample_project_page, "Deadline")
-    assert isinstance(date, pendulum.DateTime)
-    assert date.year == 2022
-    assert date.month == 12
-    assert date.day == 31
-
-
-def test_safe_check_notion_date_with_invalid_date(sample_project_page):
-    date = safe_check_notion_date(sample_project_page, "End Date")
-    assert date is None
 
 
 def test_project_page_to_class(sample_project_page):
