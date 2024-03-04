@@ -5,6 +5,7 @@ from omnilife_framework_automations.notion.core import (
     query_pages,
     update_notion_page,
     safe_check_notion_date,
+    safe_check_notion_select,
 )
 
 
@@ -36,6 +37,24 @@ def test_safe_check_notion_date_with_valid_datetime(sample_page):
 def test_safe_check_notion_date_with_invalid_date(sample_page):
     date = safe_check_notion_date(sample_page, "End Date")
     assert date is None
+
+
+def test_safe_check_notion_select_with_valid_select(sample_page):
+    select_name = "Sample Select"
+    sample_page["properties"]["Select"] = {"select": {"name": select_name}}
+    result = safe_check_notion_select(sample_page, "Select")
+    assert result == select_name
+
+
+def test_safe_check_notion_select_with_none_select(sample_page):
+    sample_page["properties"]["Select"] = {"select": None}
+    result = safe_check_notion_select(sample_page, "Select")
+    assert result is None
+
+
+def test_safe_check_notion_select_with_missing_property(sample_page):
+    result = safe_check_notion_select(sample_page, "Missing Property")
+    assert result is None
 
 
 @pytest.mark.parametrize(

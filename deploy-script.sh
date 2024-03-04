@@ -1,11 +1,16 @@
-set -xe
+#! /usr/bin/env zsh
 
-if [ -z "$1" ]; then
+declare PROJECT_NAME=$1
+
+set -xe
+setopt EXTENDED_GLOB
+
+if [ -z "$PROJECT_NAME" ]; then
     echo "Variable is empty"
     exit 1
 fi
 
-cd projects/$1
+cd projects/$PROJECT_NAME
 
 rm -rf dist
 
@@ -15,6 +20,12 @@ cd dist
 
 tar -xvf *.tar.gz
 
-cd $1-*
+cd $PROJECT_NAME-0.1.0
 
-zip -r ../$1.zip *
+poetry install
+
+cp -r .venv/lib/python3.11/site-packages/*~*info(/) .
+
+rm -rf __pycache__ .venv
+
+zip -r ../$PROJECT_NAME.zip *

@@ -14,11 +14,12 @@ def urgent_project_automation(database_id: str, api_key: str, now: pendulum.Date
 
     for page in pages:
         project = project_page_to_class(page)
-        project = become_urgent(project, now)
+        if project.deadline:
+            project = become_urgent(project, now)
 
-        if project.urgent is True:
-            update_notion_page(
-                project.id,
-                properties={"Urgent": {"checkbox": True}},
-                api_key=api_key,
-            )
+            if project.urgent is True:
+                update_notion_page(
+                    project.id,
+                    properties={"Urgent": {"checkbox": True}},
+                    api_key=api_key,
+                )

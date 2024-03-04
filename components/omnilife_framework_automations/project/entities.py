@@ -1,4 +1,7 @@
-from omnilife_framework_automations.notion.core import safe_check_notion_date
+from omnilife_framework_automations.notion.core import (
+    safe_check_notion_date,
+    safe_check_notion_select,
+)
 import pendulum
 from dataclasses import dataclass
 from enum import Enum
@@ -16,12 +19,14 @@ class ProjectSize(Enum):
     MEDIUM = "M"
     LARGE = "G"
     EXTRA_LARGE = "GG"
+    NONE = None
 
 
 class ProjectValue(Enum):
     LOW = "Low"
     MEDIUM = "Medium"
     HIGH = "High"
+    NONE = None
 
 
 @dataclass(eq=True)
@@ -47,6 +52,8 @@ def project_page_to_class(page: dict) -> Project:
     deadline = safe_check_notion_date(page, "Deadline")
     start_date = safe_check_notion_date(page, "Start Date")
     end_date = safe_check_notion_date(page, "End Date")
+    size = safe_check_notion_select(page, "Size")
+    value = safe_check_notion_select(page, "Value")
 
     return Project(
         database_id=page["parent"]["database_id"],
@@ -54,8 +61,8 @@ def project_page_to_class(page: dict) -> Project:
         name=page["properties"]["Name"]["title"][0]["text"]["content"],
         status=ProjectStatus(page["properties"]["Status"]["status"]["name"]),
         areas=[],
-        project_size=ProjectSize(page["properties"]["Size"]["select"]["name"]),
-        value=ProjectValue(page["properties"]["Value"]["select"]["name"]),
+        project_size=ProjectSize(size),
+        value=ProjectValue(value),
         days_before_urgent=page["properties"]["Days Before Urgent"]["number"],
         deadline=deadline,
         urgent=page["properties"]["Urgent"]["checkbox"],

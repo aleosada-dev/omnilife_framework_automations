@@ -2,7 +2,20 @@ import requests
 import pendulum
 
 
+def safe_check_notion_select(page: dict, property_name: str) -> str | None:
+    if page["properties"].get(property_name) is None:
+        return None
+
+    if page["properties"][property_name]["select"] is not None:
+        return page["properties"][property_name]["select"]["name"]
+
+    return None
+
+
 def safe_check_notion_date(page: dict, property_name: str) -> pendulum.DateTime | None:
+    if page["properties"].get(property_name) is None:
+        return None
+
     if page["properties"][property_name]["date"] is not None:
         return pendulum.parse(page["properties"][property_name]["date"]["start"])
     return None
