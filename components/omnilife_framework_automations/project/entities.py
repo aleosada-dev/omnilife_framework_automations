@@ -47,6 +47,25 @@ class Project:
     created_at: pendulum.DateTime
     last_edit_at: pendulum.DateTime
 
+    def to_dict(self) -> dict:
+        return {
+            "database_id": self.database_id,
+            "id": self.id,
+            "name": self.name,
+            "status": self.status.value,
+            "areas": self.areas,
+            "project_size": self.project_size.value,
+            "value": self.value.value,
+            "days_before_urgent": self.days_before_urgent,
+            "deadline": self.deadline.to_iso8601_string(),
+            "urgent": self.urgent,
+            "goals": self.goals,
+            "start_date": self.start_date.to_iso8601_string(),
+            "end_date": self.end_date.to_iso8601_string(),
+            "created_at": self.created_at.to_iso8601_string(),
+            "last_edit_at": self.last_edit_at.to_iso8601_string(),
+        }
+
 
 def project_page_to_class(page: dict) -> Project:
     deadline = safe_check_notion_date(page, "Deadline")
