@@ -27,6 +27,7 @@ class NotionFilterBuilder:
         Ends the current group and returns to the top-level 'and' group.
         """
         self.current_group = self.filter_group["and"]
+        return self
 
     def text_filter(self, column_name, condition, value):
         self.current_group.append({"property": column_name, "text": {condition: value}})
@@ -51,6 +52,18 @@ class NotionFilterBuilder:
     def checkbox_filter(self, column_name, condition, value: bool):
         self.current_group.append(
             {"property": column_name, "checkbox": {condition: value}}
+        )
+        return self
+
+    def select_filter(self, column_name, condition, value):
+        self.current_group.append(
+            {"property": column_name, "select": {condition: value}}
+        )
+        return self
+
+    def status_filter(self, column_name, condition, value):
+        self.current_group.append(
+            {"property": column_name, "status": {condition: value}}
         )
         return self
 

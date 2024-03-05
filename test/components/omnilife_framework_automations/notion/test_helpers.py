@@ -65,6 +65,24 @@ def test_datetime_filter():
     }
 
 
+def test_select_filter():
+    builder = NotionFilterBuilder()
+    builder.select_filter("Status", "equals", "In Progress")
+    assert builder.current_group[0] == {
+        "property": "Status",
+        "select": {"equals": "In Progress"},
+    }
+
+
+def test_status_filter():
+    builder = NotionFilterBuilder()
+    builder.status_filter("Status", "equals", "In Progress")
+    assert builder.current_group[0] == {
+        "property": "Status",
+        "status": {"equals": "In Progress"},
+    }
+
+
 def test_filter_build():
     builder = NotionFilterBuilder()
     filter_obj = builder.text_filter("name", "equals", "John").build()

@@ -60,6 +60,16 @@ def test_notion_filter_builder():
     # Create a filter builder instance
     filter_builder = NotionFilterBuilder()
 
+    filter_query = (
+        filter_builder.checkbox_filter("Urgent", "equals", False)
+        .datetime_filter("Deadline", "is_not_empty", True)
+        .start_or_group()
+        .status_filter("Status", "equals", "In progress")
+        .status_filter("Status", "equals", "Not started")
+        .end_group()
+        .build()
+    )
+
     # Build a complex filter with "or" condition and select specific columns
     # filter_query = filter_builder \
     #     .start_or_group() \
@@ -70,11 +80,11 @@ def test_notion_filter_builder():
     #     .select_columns("Name", "Age", "Birthday") \
     #     .build()
 
-    filter_query = (
-        filter_builder.richtext_filter("Name", "contains", "SYNC")
-        .checkbox_filter("Urgent", "equals", True)
-        .build()
-    )
+    # filter_query = (
+    #     filter_builder.richtext_filter("Name", "contains", "SYNC")
+    #     .checkbox_filter("Urgent", "equals", True)
+    #     .build()
+    # )
 
     pprint(json.dumps(filter_query))
 
@@ -87,8 +97,8 @@ def test_notion_sort_builder():
     pprint(json.dumps(sort_query))
 
 
-test_query_pages()
+# test_query_pages()
 # test_urgent_project_automation()
 # test_safe_check_notion_select_with_missing_property()
-# test_notion_filter_builder()
+test_notion_filter_builder()
 # test_notion_sort_builder()
