@@ -9,6 +9,7 @@ packages = [
     { include = "omnilife_framework_automations/autofill_urgent_project_lambda", from = "../../bases" },
     { include = "omnilife_framework_automations/notion", from = "../../components" },
     { include = "omnilife_framework_automations/project", from = "../../components" },
+    { include = "omnilife_framework_automations/logger", from = "../../components" },
 ]
 
 [tool.poetry.dependencies]

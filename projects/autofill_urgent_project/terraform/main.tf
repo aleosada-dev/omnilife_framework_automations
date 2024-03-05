@@ -4,7 +4,7 @@ data "aws_ssm_parameter" "notion_api_key" {
 }
 
 resource "aws_sns_topic" "autofill_urgent_project_lambda_error_topic" {
-  name = "my-topic"
+  name = "autofill_urgent_project_lambda_error_topic"
 }
 
 resource "aws_sns_topic_subscription" "autofill_urgent_project_lambda_error_topic_subscription" {
@@ -23,6 +23,7 @@ resource "aws_lambda_function" "autofill_urgent_project_lambda" {
   memory_size   = 128
   publish       = true
   filename      = "../dist/autofill_urgent_project.zip"
+  source_code_hash = filebase64sha256("../dist/autofill_urgent_project.zip")
   environment {
     variables = {
       NOTION_DATABASE_ID = "6be0dff3c0ea4c9a9fdec4f665a22a7a"
@@ -58,6 +59,7 @@ resource "aws_iam_role" "autofill_urgent_project_lambda_role" {
   })
 }
 
+# Attach the lambda policy to publish to SNS topic
 resource "aws_iam_role_policy" "lambda_sns_publish" {
   name   = "lambda_sns_publish"
   role   = aws_iam_role.autofill_urgent_project_lambda_role.id
@@ -71,6 +73,12 @@ resource "aws_iam_role_policy" "lambda_sns_publish" {
       },
     ]
   })
+}
+
+# Attach the AWSLambdaBasicExecutionRole policy to the IAM role to log to cloudwatch
+resource "aws_iam_role_policy_attachment" "lambda_logs" {
+  role       = aws_iam_role.autofill_urgent_project_lambda_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
 # Create the CloudWatch Event Rule
