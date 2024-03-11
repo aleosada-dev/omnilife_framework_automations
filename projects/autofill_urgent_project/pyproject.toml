@@ -10,6 +10,7 @@ packages = [
     { include = "omnilife_framework_automations/notion", from = "../../components" },
     { include = "omnilife_framework_automations/project", from = "../../components" },
     { include = "omnilife_framework_automations/logger", from = "../../components" },
+    { include = "omnilife_framework_automations/infrastructure", from = "../../components" },
 ]
 
 [tool.poetry.dependencies]
@@ -17,6 +18,7 @@ python = "^3.11"
 requests = "^2.31.0"
 pendulum = "^3.0.0"
 requests-mock = "^1.11.0"
+injector = "^0.21.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

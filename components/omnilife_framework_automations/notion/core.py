@@ -22,7 +22,7 @@ def safe_check_notion_date(page: dict, property_name: str) -> pendulum.DateTime 
 
 
 def query_pages(
-    database_id: str, api_key: str, filter_query: dict = None, sort_builder: dict = None
+    database_id: str, api_key: str, filter_query: dict = None, sort_query: dict = None
 ):
     if database_id is None or database_id == "":
         raise ValueError("Database ID is empty or None")
@@ -40,8 +40,8 @@ def query_pages(
     if filter_query is not None:
         payload.update(filter_query)
 
-    if sort_builder is not None:
-        payload.update(sort_builder)
+    if sort_query is not None:
+        payload.update(sort_query)
 
     response = requests.post(
         f"https://api.notion.com/v1/databases/{database_id}/query",

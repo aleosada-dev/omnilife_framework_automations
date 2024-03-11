@@ -1,13 +1,12 @@
+from omnilife_framework_automations.project.repositories import ProjectNotionRepository
+from omnilife_framework_automations.project.services import ProjectService
 import pendulum
-from unittest.mock import patch
-from omnilife_framework_automations.project.automations import urgent_project_automation
+from unittest.mock import Mock
 
 
-@patch("omnilife_framework_automations.project.automations.query_pages")
-@patch("omnilife_framework_automations.project.automations.update_notion_page")
-def test_urgent_project_automation(mock_update_notion_page, mock_query_pages):
+def test_urgent_project_automation():
     # Mock the query_pages function to return a list of sample project pages
-    mock_query_pages.return_value = [
+    pages = [
         {
             "parent": {"database_id": "sample_database_id"},
             "id": "sample_id_1",
@@ -43,13 +42,18 @@ def test_urgent_project_automation(mock_update_notion_page, mock_query_pages):
             "last_edited_time": "2022-01-01T00:00:00Z",
         },
     ]
+    project_repository = Mock(ProjectNotionRepository)
+    project_repository.query_pages.return_value = pages
     now = pendulum.datetime(2022, 12, 26)
 
     # Call the function
-    urgent_project_automation("sample_database_id", "sample_api_key", now)
+    project_service = ProjectService(project_repository)
+    project_service.urgent_project_automation(
+        "sample_database_id", "sample_api_key", now
+    )
 
     # Assert that the update_notion_page function is called with the correct arguments
-    mock_update_notion_page.assert_called_with(
+    project_repository.update_notion_page.assert_called_with(
         "sample_id_2",
         properties={"Urgent": {"checkbox": True}},
         api_key="sample_api_key",

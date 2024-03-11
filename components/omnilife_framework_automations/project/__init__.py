@@ -1,3 +1,3 @@
-from omnilife_framework_automations.project import entities, automations
+from omnilife_framework_automations.project import entities, services, modules
 
-__all__ = ["entities", "automations"]
+__all__ = ["entities", "services", "modules"]

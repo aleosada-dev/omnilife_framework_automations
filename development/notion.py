@@ -1,4 +1,6 @@
 import json
+from omnilife_framework_automations.project.repositories import ProjectNotionRepository
+from omnilife_framework_automations.project.services import ProjectService
 import pendulum
 import os
 from dotenv import load_dotenv
@@ -11,7 +13,6 @@ from omnilife_framework_automations.notion.core import (
     safe_check_notion_select,
 )
 from omnilife_framework_automations.project.entities import project_page_to_class
-from omnilife_framework_automations.project.automations import urgent_project_automation
 from pprint import pprint
 
 
@@ -46,7 +47,9 @@ def test_urgent_project_automation():
     api_key = os.getenv("NOTION_API_KEY")
 
     # Call the function
-    urgent_project_automation(database_id, api_key, pendulum.now())
+    project_repository = ProjectNotionRepository()
+    projectService = ProjectService(project_repository)
+    projectService.urgent_project_automation(database_id, api_key, pendulum.now())
 
 
 def test_safe_check_notion_select_with_missing_property():
@@ -98,7 +101,7 @@ def test_notion_sort_builder():
 
 
 # test_query_pages()
-# test_urgent_project_automation()
+test_urgent_project_automation()
 # test_safe_check_notion_select_with_missing_property()
-test_notion_filter_builder()
+# test_notion_filter_builder()
 # test_notion_sort_builder()
