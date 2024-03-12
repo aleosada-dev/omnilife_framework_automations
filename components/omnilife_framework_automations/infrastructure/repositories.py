@@ -10,3 +10,13 @@ class IProjectRepository:
 
     def update_notion_page(self, page_id: str, properties: dict, api_key: str):
         raise NotImplementedError
+
+
+class IEventRespository:
+    def get_events(calendar_id: str, start_min: str, start_max: str):
+        raise NotImplementedError
+
+
+class IParameterRepository:
+    def get_parameter(self, parameter: str):
+        raise NotImplementedError
