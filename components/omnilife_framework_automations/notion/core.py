@@ -1,3 +1,4 @@
+from enum import Enum
 import requests
 import pendulum
 
@@ -12,12 +13,15 @@ def safe_check_notion_select(page: dict, property_name: str) -> str | None:
     return None
 
 
-def safe_check_notion_date(page: dict, property_name: str) -> pendulum.DateTime | None:
+def safe_check_notion_date(page: dict, property_name: str, end: bool = None) -> pendulum.DateTime | None:
     if page["properties"].get(property_name) is None:
         return None
 
     if page["properties"][property_name]["date"] is not None:
-        return pendulum.parse(page["properties"][property_name]["date"]["start"])
+        if not end:
+            return pendulum.parse(page["properties"][property_name]["date"]["start"])
+        else:
+            return pendulum.parse(page["properties"][property_name]["date"]["end"])
     return None
 
 
@@ -75,3 +79,25 @@ def update_notion_page(page_id: str, properties: dict, api_key: str):
     )
     if response.status_code != 200:
         raise ValueError("Failed to update Notion page")
+
+
+def add_database_page(database_id: str, properties: dict, api_key: str):
+    if database_id is None or database_id == "":
+        raise ValueError("Database ID is empty or None")
+
+    if api_key is None or api_key == "":
+        raise ValueError("API key is empty or None")
+
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+        "Notion-Version": "2022-06-28",
+    }
+    payload = {"parent": {"database_id": database_id}, "properties": properties}
+    response = requests.post(
+        "https://api.notion.com/v1/pages",
+        headers=headers,
+        json=payload,
+    )
+    if response.status_code != 200:
+        raise ValueError("Failed to add page to Notion database")

@@ -12,6 +12,7 @@ packages = [
     { include = "omnilife_framework_automations/google", from = "./components" },
     { include = "omnilife_framework_automations/event", from = "./components" },
     { include = "omnilife_framework_automations/parameter", from = "./components" },
+    { include = "omnilife_framework_automations/task", from = "./components" },
     { include = "omnilife_framework_automations/infrastructure", from = "./components" },
     { include = "omnilife_framework_automations/autofill_urgent_project_lambda", from = "./bases" },
 ]

@@ -1,3 +1,6 @@
+from omnilife_framework_automations.task.entities import Task
+
+
 class IProjectRepository:
     def query_pages(
         self,
@@ -17,6 +20,11 @@ class IEventRespository:
         raise NotImplementedError
 
 
+class ITaskRepository:
+    def add_task(self, task: Task):
+        raise NotImplementedError
+
+
 class IParameterRepository:
-    def get_parameter(self, parameter: str):
+    def get(self, parameter: str):
         raise NotImplementedError
