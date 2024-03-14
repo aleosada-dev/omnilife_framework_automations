@@ -1,9 +1,17 @@
+from injector import Injector
+from omnilife_framework_automations.event.modules import EventRepositoryModule
+from omnilife_framework_automations.infrastructure.repositories import ITaskRepository
+from omnilife_framework_automations.parameter.modules import ParameterRepositoryModule
+from omnilife_framework_automations.task.modules import TaskRepositoryModule
+from omnilife_framework_automations.task.services import TaskService
 import pendulum
-from omnilife_framework_automations.parameter.repositories import (
-    EnviromentVariableParameterRepository,
-)
 from omnilife_framework_automations.task.entities import Task, TaskPriority, TaskStatus
-from omnilife_framework_automations.task.repositories import TaskNotionRepository
+
+
+def setup_injector():
+    return Injector(
+        [TaskRepositoryModule(), ParameterRepositoryModule(), EventRepositoryModule()]
+    )
 
 
 def add_task():
@@ -25,9 +33,19 @@ def add_task():
         last_edit_at=None,
     )
 
-    parameter_repository = EnviromentVariableParameterRepository()
-    task_repository = TaskNotionRepository(parameter_repository)
+    injector = setup_injector()
+    task_repository = injector.get(ITaskRepository)
+
     task_repository.add_task(task)
 
 
-add_task()
+def plan_week():
+    injector = setup_injector()
+    task_service = injector.get(TaskService)
+    task_service.plan_next_week(
+        "a73e7970246e334a1d8e4d80e7d96e87691eca29804c578dca7424104f685b24@group.calendar.google.com"
+    )
+
+
+# add_task()
+plan_week()

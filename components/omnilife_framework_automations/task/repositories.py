@@ -1,5 +1,4 @@
 from typing import Self
-from pprint import pprint
 from injector import inject
 from omnilife_framework_automations.infrastructure.repositories import (
     IParameterRepository,
@@ -18,5 +17,4 @@ class TaskNotionRepository(ITaskRepository):
 
     def add_task(self: Self, task: Task):
         props = task.map_to_notion_properties()
-        pprint(props)
         add_database_page(task.database_id, props, self.api_key)

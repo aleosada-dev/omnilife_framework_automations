@@ -1,6 +1,7 @@
 from typing import Self
 from googleapiclient.discovery import build
 from google.oauth2 import service_account
+from injector import inject
 from omnilife_framework_automations.event.entities import (
     map_googlecalendar_event_to_event,
 )
@@ -10,6 +11,7 @@ from omnilife_framework_automations.infrastructure.repositories import (
 
 
 class GoogleCalendarEventRepository:
+    @inject
     def __init__(self: Self, parameter_respository: IParameterRepository) -> None:
         self.parameter_repository = parameter_respository
 

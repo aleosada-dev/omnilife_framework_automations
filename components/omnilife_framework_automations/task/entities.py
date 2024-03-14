@@ -1,3 +1,4 @@
+from typing import Self
 import pendulum
 from omnilife_framework_automations.notion.core import (
     safe_check_notion_date,
@@ -40,7 +41,7 @@ class Task:
     created_at: pendulum.DateTime
     last_edit_at: pendulum.DateTime
 
-    def to_dict(self) -> dict:
+    def to_dict(self: Self) -> dict:
         return {
             "database_id": self.database_id,
             "id": self.id,
@@ -70,7 +71,7 @@ class Task:
             else None,
         }
 
-    def map_to_notion_properties(self) -> dict:
+    def map_to_notion_properties(self: Self) -> dict:
         props = {}
         props["Name"] = {"title": [{"text": {"content": self.name}}]}
         props["Status"] = {"status": {"name": self.status.value}}

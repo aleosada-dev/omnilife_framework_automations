@@ -10,6 +10,7 @@ class Event:
     start_date: pendulum.DateTime
     end_date: pendulum.DateTime
     areas: list
+    projects: list
     priority: str
 
 
@@ -33,6 +34,7 @@ def map_googlecalendar_event_to_event(google_event):
         end_date=end_date,
         priority=priority,
         areas=[],
+        projects=[],
     )
 
     areas = safe_get(google_event, "extendedProperties", "private", "areas")
@@ -42,5 +44,13 @@ def map_googlecalendar_event_to_event(google_event):
         if isinstance(areas, list):
             for area in areas:
                 event.areas.append(area)
+
+    projects = safe_get(google_event, "extendedProperties", "private", "projects")
+    if projects:
+        if isinstance(projects, str):
+            event.projects.append(projects)
+        if isinstance(projects, list):
+            for project in projects:
+                event.projects.append(project)
 
     return event
