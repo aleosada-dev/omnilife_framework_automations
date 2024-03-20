@@ -10,5 +10,5 @@ class IProjectService:
 
 
 class ITaskService:
-    def plan_next_week(self: Self, agenda_id: str):
+    def plan_next_week(self: Self, task_database_id: str, agenda_id: str):
         raise NotImplementedError

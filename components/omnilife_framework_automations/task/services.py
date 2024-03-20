@@ -9,9 +9,9 @@ from omnilife_framework_automations.infrastructure.services import ITaskService
 from omnilife_framework_automations.task.entities import Task, TaskPriority, TaskStatus
 
 
-def map_event_to_task(event: Event):
+def map_event_to_task(task_database_id: str, event: Event):
     return Task(
-        database_id="9044e0c3e3ac49b5bfddf61c9baf1032",
+        database_id=task_database_id,
         id=None,
         name=event.name,
         status=TaskStatus("Not started"),
@@ -38,10 +38,10 @@ class TaskService(ITaskService):
         self.task_repository = task_repository
         self.event_repository = event_repository
 
-    def plan_next_week(self: Self, agenda_id: str):
+    def plan_next_week(self: Self, task_database_id: str, agenda_id: str):
         events = self.event_repository.get_events(
             agenda_id, "2024-03-17T00:00:00Z", "2024-03-24T00:00:00Z"
         )
         for event in events:
-            task = map_event_to_task(event)
+            task = map_event_to_task(task_database_id, event)
             self.task_repository.add_task(task)

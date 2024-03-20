@@ -19,8 +19,8 @@ class Application:
     def __init__(self, task_service: ITaskService):
         self.task_service = task_service
 
-    def run(self: Self, agenda_id: str):
-        self.task_service.plan_next_week(agenda_id)
+    def run(self: Self, task_database_id: str, agenda_id: str):
+        self.task_service.plan_next_week(task_database_id, agenda_id)
 
 
 def lambda_handler(event, context):
@@ -28,10 +28,11 @@ def lambda_handler(event, context):
 
     try:
         agenda_id = os.environ.get("GOOGLE_CALENDAR_AGENDA_ID")
+        task_database_id = os.environ.get("NOTION_DATABASE_ID")
 
         injector = setup_injector()
         app = injector.get(Application)
-        app.run(agenda_id)
+        app.run(task_database_id, agenda_id)
     except Exception as e:
         logger.error(
             f"An error occurred: {e}",
