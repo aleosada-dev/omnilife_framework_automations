@@ -5,6 +5,7 @@ from omnilife_framework_automations.infrastructure.repositories import (
     IEventRespository,
     ITaskRepository,
 )
+from omnilife_framework_automations.infrastructure.services import ITaskService
 from omnilife_framework_automations.task.entities import Task, TaskPriority, TaskStatus
 
 
@@ -27,7 +28,7 @@ def map_event_to_task(event: Event):
     )
 
 
-class TaskService:
+class TaskService(ITaskService):
     @inject
     def __init__(
         self: Self,

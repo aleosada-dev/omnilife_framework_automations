@@ -15,6 +15,7 @@ packages = [
     { include = "omnilife_framework_automations/task", from = "./components" },
     { include = "omnilife_framework_automations/infrastructure", from = "./components" },
     { include = "omnilife_framework_automations/autofill_urgent_project_lambda", from = "./bases" },
+    { include = "omnilife_framework_automations/plan_next_week_lambda", from = "./bases" },
 ]
 
 [tool.poetry.dependencies]
