@@ -8,7 +8,7 @@ if [ -n "$BASH_VERSION" ]; then
             #    COMPREPLY=( $( compgen -W '' -- "$cur" ) )
             #    ;;
             *)
-                COMPREPLY=( $( compgen -W 'autofill_urgent_project' -- "$cur" ) )
+                COMPREPLY=( $( compgen -W 'autofill_urgent_project plan_next_week' -- "$cur" ) )
                 ;;
         esac
         return 0
@@ -20,11 +20,8 @@ fi
 if [[ -n "$ZSH_VERSION" ]]; then
     _deploy_script() {
         case $words[2] in
-            -*)
-                reply=( '--help' '--verbose' '--force' )
-                ;;
             *)
-                reply=('autofill_urgent_project')
+                reply=('autofill_urgent_project' 'plan_next_week')
                 ;;
         esac
     }
