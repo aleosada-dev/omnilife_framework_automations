@@ -1,6 +1,6 @@
 # Reference parameter store of api_key
 data "aws_ssm_parameter" "googlecalendar_agenda_id" {
-  name = "/google/calendar/calendar_id"
+  name = "/google/calendar/agenda_id"
 }
 
 data "aws_ssm_parameter" "googlecalendar_project_id" {
