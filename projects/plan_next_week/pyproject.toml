@@ -12,6 +12,8 @@ packages = [
     { include = "omnilife_framework_automations/task", from = "../../components" },
     { include = "omnilife_framework_automations/parameter", from = "../../components" },
     { include = "omnilife_framework_automations/event", from = "../../components" },
+    { include = "omnilife_framework_automations/google", from = "../../components" },
+    { include = "omnilife_framework_automations/notion", from = "../../components" },
 ]
 
 [tool.poetry.dependencies]
@@ -20,7 +22,9 @@ requests = "^2.31.0"
 pendulum = "^3.0.0"
 injector = "^0.21.0"
 google-auth = "^2.28.2"
-google-api-python-client = "2.122.0"
+google-api-python-client = "^2.122.0"
+google-auth-httplib2 = "^0.2.0"
+google-auth-oauthlib = "^1.2.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

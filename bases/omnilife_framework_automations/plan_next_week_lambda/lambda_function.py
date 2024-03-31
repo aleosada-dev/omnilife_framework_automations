@@ -4,13 +4,21 @@ from injector import Injector, inject
 from omnilife_framework_automations.event.modules import EventRepositoryModule
 from omnilife_framework_automations.parameter.modules import ParameterRepositoryModule
 from omnilife_framework_automations.infrastructure.services import ITaskService
-from omnilife_framework_automations.task.modules import TaskRepositoryModule
+from omnilife_framework_automations.task.modules import (
+    TaskRepositoryModule,
+    TaskServiceModule,
+)
 from omnilife_framework_automations.logger.logger import setup_logger
 
 
 def setup_injector():
     return Injector(
-        [TaskRepositoryModule(), ParameterRepositoryModule(), EventRepositoryModule()]
+        [
+            TaskServiceModule(),
+            TaskRepositoryModule(),
+            ParameterRepositoryModule(),
+            EventRepositoryModule(),
+        ]
     )
 
 

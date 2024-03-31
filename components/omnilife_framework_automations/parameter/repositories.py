@@ -1,10 +1,7 @@
 import os
-from dotenv import load_dotenv
 from omnilife_framework_automations.infrastructure.repositories import (
     IParameterRepository,
 )
-
-load_dotenv()
 
 
 class EnviromentVariableParameterRepository(IParameterRepository):

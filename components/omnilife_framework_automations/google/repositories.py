@@ -48,7 +48,7 @@ class GoogleCalendarEventRepository:
             service.events()
             .list(
                 calendarId=calendar_id,
-                singleEvents=False,
+                singleEvents=True,
                 timeMin=start_min,
                 timeMax=start_max,
                 showDeleted=False,

@@ -25,6 +25,7 @@ cd $PROJECT_NAME-0.1.0
 poetry install
 
 cp -r .venv/lib/python3.11/site-packages/*~*info(/) .
+cp .venv/lib/python3.11/site-packages/*.py .
 
 rm -rf __pycache__ .venv
 

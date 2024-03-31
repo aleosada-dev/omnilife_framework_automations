@@ -1,3 +1,4 @@
+import pendulum
 from typing import Self
 from injector import inject
 from omnilife_framework_automations.event.entities import Event
@@ -39,8 +40,12 @@ class TaskService(ITaskService):
         self.event_repository = event_repository
 
     def plan_next_week(self: Self, task_database_id: str, agenda_id: str):
+        today = pendulum.now().start_of("day")
+        start_min = today.to_iso8601_string()
+        start_max = today.add(days=7).to_iso8601_string()
+
         events = self.event_repository.get_events(
-            agenda_id, "2024-03-17T00:00:00Z", "2024-03-24T00:00:00Z"
+            agenda_id, start_min, start_max 
         )
         for event in events:
             task = map_event_to_task(task_database_id, event)

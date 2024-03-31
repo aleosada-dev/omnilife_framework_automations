@@ -1,4 +1,5 @@
 from injector import Injector
+from dotenv import load_dotenv
 from omnilife_framework_automations.event.modules import EventRepositoryModule
 from omnilife_framework_automations.infrastructure.repositories import ITaskRepository
 from omnilife_framework_automations.parameter.modules import ParameterRepositoryModule
@@ -6,6 +7,8 @@ from omnilife_framework_automations.task.modules import TaskRepositoryModule
 from omnilife_framework_automations.task.services import TaskService
 import pendulum
 from omnilife_framework_automations.task.entities import Task, TaskPriority, TaskStatus
+
+load_dotenv()
 
 
 def setup_injector():
@@ -43,7 +46,8 @@ def plan_week():
     injector = setup_injector()
     task_service = injector.get(TaskService)
     task_service.plan_next_week(
-        "a73e7970246e334a1d8e4d80e7d96e87691eca29804c578dca7424104f685b24@group.calendar.google.com"
+        "9044e0c3e3ac49b5bfddf61c9baf1032",
+        "a73e7970246e334a1d8e4d80e7d96e87691eca29804c578dca7424104f685b24@group.calendar.google.com",
     )
 
 
