@@ -46,6 +46,7 @@ def plan_next_week(task_database_id: str, agenda_id: str):
     events = event_repository.get_events(agenda_id, start_min, start_max)
 
     for event in events:
+        pprint(event)
         task = map_event_to_task(task_database_id, event)
         pprint(task)
         task_repository.add_task(task)

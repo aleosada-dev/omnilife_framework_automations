@@ -76,7 +76,7 @@ class Task:
         props["Name"] = {"title": [{"text": {"content": self.name}}]}
         props["Status"] = {"status": {"name": self.status.value}}
 
-        if self.priority:
+        if self.priority and self.priority.value is not None:
             props["Priority"] = {"select": {"name": self.priority.value}}
 
         if self.planned_datetime_start:

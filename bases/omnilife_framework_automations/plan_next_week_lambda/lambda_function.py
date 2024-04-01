@@ -1,4 +1,5 @@
 import os
+import json
 from typing import Self
 from injector import Injector, inject
 from omnilife_framework_automations.event.modules import EventRepositoryModule
@@ -33,10 +34,10 @@ class Application:
 
 def lambda_handler(event, context):
     logger = setup_logger(__name__)
+    agenda_id = event.get("agenda_id")
+    task_database_id = os.environ.get("NOTION_DATABASE_ID")
 
     try:
-        agenda_id = os.environ.get("GOOGLE_CALENDAR_AGENDA_ID")
-        task_database_id = os.environ.get("NOTION_DATABASE_ID")
 
         injector = setup_injector()
         app = injector.get(Application)

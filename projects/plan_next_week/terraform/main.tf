@@ -47,7 +47,7 @@ resource "aws_lambda_function" "plan_next_week_lambda" {
   role          = aws_iam_role.plan_next_week_lambda_role.arn
   handler       = "omnilife_framework_automations.plan_next_week_lambda.lambda_function.lambda_handler"
   runtime       = "python3.11"
-  timeout       = 60
+  timeout       = 90
   memory_size   = 128
   publish       = true
   filename      = "../dist/plan_next_week.zip"
@@ -116,25 +116,56 @@ resource "aws_iam_role_policy_attachment" "lambda_logs" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
-# Create the CloudWatch Event Rule
-resource "aws_cloudwatch_event_rule" "plan_next_week_schedule" {
-  name        = "plan_next_week_schedule"
-  description = "Schedule for running the plan_next_week_lambda"
+# Create the CloudWatch Event Rule for work agenda
+resource "aws_cloudwatch_event_rule" "plan_next_week_work_schedule" {
+  name        = "plan_next_week_work_schedule"
+  description = "Schedule for running the plan_next_week_lambda for work agenda"
   schedule_expression = "cron(0 4 * * ? 0)"
 }
 
-# Create the CloudWatch Event Target
-resource "aws_cloudwatch_event_target" "plan_next_week_target" {
-  rule      = aws_cloudwatch_event_rule.plan_next_week_schedule.name
+# Create the CloudWatch Event Rule for work personal
+resource "aws_cloudwatch_event_rule" "plan_next_week_personal_schedule" {
+  name        = "plan_next_week_personal_schedule"
+  description = "Schedule for running the plan_next_week_lambda for personal agenda"
+  schedule_expression = "cron(0 4 * * ? 0)"
+}
+
+# Create the CloudWatch Event Target for work agenda
+resource "aws_cloudwatch_event_target" "plan_next_week_work_target" {
+  rule      = aws_cloudwatch_event_rule.plan_next_week_work_schedule.name
   target_id = aws_lambda_function.plan_next_week_lambda.function_name
   arn       = aws_lambda_function.plan_next_week_lambda.arn
+
+  input = jsonencode({
+    "agenda_id": var.googlecalendar_work_agenda_id
+  })
+}
+
+# Create the CloudWatch Event Target for personal agenda
+resource "aws_cloudwatch_event_target" "plan_next_week_personal_target" {
+  rule      = aws_cloudwatch_event_rule.plan_next_week_personal_schedule.name
+  target_id = aws_lambda_function.plan_next_week_lambda.function_name
+  arn       = aws_lambda_function.plan_next_week_lambda.arn
+
+  input = jsonencode({
+    "agenda_id": var.googlecalendar_personal_agenda_id
+  })
 }
 
 # Permission to allow CloudWatch to invoke the Lambda function
-resource "aws_lambda_permission" "allow_cloudwatch" {
-  statement_id  = "AllowExecutionFromCloudWatch"
+resource "aws_lambda_permission" "allow_cloudwatch_work" {
+  statement_id  = "AllowExecutionFromCloudWatch_work"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.plan_next_week_lambda.function_name
   principal     = "events.amazonaws.com"
-  source_arn    = aws_cloudwatch_event_rule.plan_next_week_schedule.arn
+  source_arn    = aws_cloudwatch_event_rule.plan_next_week_work_schedule.arn
+}
+
+# Permission to allow CloudWatch to invoke the Lambda function
+resource "aws_lambda_permission" "allow_cloudwatch_personal" {
+  statement_id  = "AllowExecutionFromCloudWatch_personal"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.plan_next_week_lambda.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.plan_next_week_personal_schedule.arn
 }
