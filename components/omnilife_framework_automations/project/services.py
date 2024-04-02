@@ -1,6 +1,6 @@
 from typing import Self
 from injector import inject
-from omnilife_framework_automations.infrastructure.repositories import (
+from omnilife_framework_automations.infrastructure.repositories.project import (
     IProjectRepository,
 )
 from omnilife_framework_automations.infrastructure.services import IProjectService
@@ -16,12 +16,9 @@ class ProjectService(IProjectService):
     def __init__(self: Self, project_repository: IProjectRepository) -> None:
         self.project_repository = project_repository
 
-    def urgent_project_automation(
-        self: Self, database_id: str, api_key: str, now: pendulum.DateTime
-    ):
+    def urgent_project_automation(self: Self, database_id: str, now: pendulum.DateTime):
         pages = self.project_repository.query_pages(
             database_id=database_id,
-            api_key=api_key,
         )
 
         for page in pages:
@@ -33,5 +30,4 @@ class ProjectService(IProjectService):
                     self.project_repository.update_notion_page(
                         project.id,
                         properties={"Urgent": {"checkbox": True}},
-                        api_key=api_key,
                     )

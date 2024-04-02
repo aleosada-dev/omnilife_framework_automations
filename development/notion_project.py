@@ -1,4 +1,7 @@
 import json
+from omnilife_framework_automations.parameter.repositories import (
+    EnviromentVariableParameterRepository,
+)
 from omnilife_framework_automations.project.repositories import ProjectNotionRepository
 from omnilife_framework_automations.project.services import ProjectService
 import pendulum
@@ -22,7 +25,7 @@ load_dotenv()
 def test_query_pages():
     # Arrange
     database_id = os.getenv("NOTION_PROJECTS_DATABASE_ID")
-    api_key = os.getenv("NOTION_API_KEY")
+    api_key = os.getenv("NOTION_APIKEY")
     filter_builder = NotionFilterBuilder()
     filter_query = filter_builder.richtext_filter(
         "Name", "contains", "Estabelecer"
@@ -44,12 +47,12 @@ def test_query_pages():
 def test_urgent_project_automation():
     # Arrange
     database_id = os.getenv("NOTION_PROJECTS_DATABASE_ID")
-    api_key = os.getenv("NOTION_API_KEY")
 
     # Call the function
-    project_repository = ProjectNotionRepository()
+    parameters_repository = EnviromentVariableParameterRepository()
+    project_repository = ProjectNotionRepository(parameters_repository)
     projectService = ProjectService(project_repository)
-    projectService.urgent_project_automation(database_id, api_key, pendulum.now())
+    projectService.urgent_project_automation(database_id, pendulum.now())
 
 
 def test_safe_check_notion_select_with_missing_property():

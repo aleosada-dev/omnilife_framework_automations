@@ -1,8 +1,9 @@
 import pytest
 from unittest.mock import Mock, patch
-# from omnilife_framework_automations.google.repositories import (
-#     GoogleCalendarEventRepository,
-# )
+
+from omnilife_framework_automations.google.repositories import (
+    GoogleCalendarEventRepository,
+)
 
 
 @pytest.fixture
@@ -73,7 +74,7 @@ def test_get_events(events_result):
         result = repository.get_events("calendar_id", "start_min", "start_max")
 
     # Assert the expected calls and results
-    parameter_repository.get.assert_called_with("GOOGLE_PROJECT_ID")
+    parameter_repository.get.assert_called_with("GOOGLE_CALENDAR_PROJECT_ID")
     build.assert_called_with("calendar", "v3", credentials=Mock())
     events.list.assert_called_with(
         calendarId="calendar_id",

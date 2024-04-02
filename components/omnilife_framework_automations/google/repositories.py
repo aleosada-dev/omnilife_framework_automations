@@ -5,7 +5,7 @@ from injector import inject
 from omnilife_framework_automations.event.entities import (
     map_googlecalendar_event_to_event,
 )
-from omnilife_framework_automations.infrastructure.repositories import (
+from omnilife_framework_automations.infrastructure.repositories.parameter import (
     IParameterRepository,
 )
 
@@ -16,15 +16,15 @@ class GoogleCalendarEventRepository:
         self.parameter_repository = parameter_respository
 
     def get_events(self: Self, calendar_id: str, start_min: str, start_max: str):
-        project_id = self.parameter_repository.get("GOOGLE_PROJECT_ID")
-        private_key_id = self.parameter_repository.get("GOOGLE_PRIVATE_KEY_ID")
-        private_key = self.parameter_repository.get("GOOGLE_PRIVATE_KEY").replace(
-            "\\n", "\n"
-        )
-        client_email = self.parameter_repository.get("GOOGLE_CLIENT_EMAIL")
-        client_id = self.parameter_repository.get("GOOGLE_CLIENT_ID")
+        project_id = self.parameter_repository.get("GOOGLE_CALENDAR_PROJECTID")
+        private_key_id = self.parameter_repository.get("GOOGLE_CALENDAR_PRIVATEKEYID")
+        private_key = self.parameter_repository.get(
+            "GOOGLE_CALENDAR_PRIVATEKEY"
+        ).replace("\\n", "\n")
+        client_email = self.parameter_repository.get("GOOGLE_CALENDAR_CLIENTEMAIL")
+        client_id = self.parameter_repository.get("GOOGLE_CALENDAR_CLIENTID")
         client_x509_cert_url = self.parameter_repository.get(
-            "GOOGLE_CLIENT_X509_CERT_URL"
+            "GOOGLE_CALENDAR_CLIENTX509CERTURL"
         )
 
         credentials = service_account.Credentials.from_service_account_info(

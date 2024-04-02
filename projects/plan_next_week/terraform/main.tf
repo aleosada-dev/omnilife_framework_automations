@@ -1,36 +1,3 @@
-# Reference parameter store of api_key
-data "aws_ssm_parameter" "googlecalendar_agenda_id" {
-  name = "/google/calendar/agenda_id"
-}
-
-data "aws_ssm_parameter" "googlecalendar_project_id" {
-  name = "/google/calendar/project_id"
-}
-
-data "aws_ssm_parameter" "googlecalendar_private_key_id" {
-  name = "/google/calendar/private_key_id"
-}
-
-data "aws_ssm_parameter" "googlecalendar_private_key" {
-  name = "/google/calendar/private_key"
-}
-
-data "aws_ssm_parameter" "googlecalendar_client_email" {
-  name = "/google/calendar/client_email"
-}
-
-data "aws_ssm_parameter" "googlecalendar_client_id" {
-  name = "/google/calendar/client_id"
-}
-
-data "aws_ssm_parameter" "googlecalendar_client_x509_cert_url" {
-  name = "/google/calendar/client_x509_cert_url"
-}
-
-data "aws_ssm_parameter" "notion_api_key" {
-  name = "/notion/api_key"
-}
-
 resource "aws_sns_topic" "plan_next_week_lambda_error_topic" {
   name = "plan_next_week_lambda_error_topic"
 }
@@ -43,26 +10,18 @@ resource "aws_sns_topic_subscription" "plan_next_week_lambda_error_topic_subscri
 
 # Create the Lambda function
 resource "aws_lambda_function" "plan_next_week_lambda" {
-  function_name = var.function_name
-  role          = aws_iam_role.plan_next_week_lambda_role.arn
-  handler       = "omnilife_framework_automations.plan_next_week_lambda.lambda_function.lambda_handler"
-  runtime       = "python3.11"
-  timeout       = 90
-  memory_size   = 128
-  publish       = true
-  filename      = "../dist/plan_next_week.zip"
+  function_name    = var.function_name
+  role             = aws_iam_role.plan_next_week_lambda_role.arn
+  handler          = "omnilife_framework_automations.plan_next_week_lambda.lambda_function.lambda_handler"
+  runtime          = "python3.11"
+  timeout          = 90
+  memory_size      = 128
+  publish          = true
+  filename         = "../dist/plan_next_week.zip"
   source_code_hash = filebase64sha256("../dist/plan_next_week.zip")
   environment {
     variables = {
       NOTION_DATABASE_ID = var.notion_task_database_id
-      NOTION_API_KEY  = data.aws_ssm_parameter.notion_api_key.value
-      GOOGLE_CALENDAR_AGENDA_ID = data.aws_ssm_parameter.googlecalendar_agenda_id.value
-      GOOGLE_PROJECT_ID = data.aws_ssm_parameter.googlecalendar_project_id.value 
-      GOOGLE_PRIVATE_KEY_ID = data.aws_ssm_parameter.googlecalendar_private_key_id.value
-      GOOGLE_PRIVATE_KEY = data.aws_ssm_parameter.googlecalendar_private_key.value
-      GOOGLE_CLIENT_EMAIL = data.aws_ssm_parameter.googlecalendar_client_email.value
-      GOOGLE_CLIENT_ID = data.aws_ssm_parameter.googlecalendar_client_id.value
-      GOOGLE_CLIENT_X509_CERT_URL = data.aws_ssm_parameter.googlecalendar_client_x509_cert_url.value
     }
   }
 }
@@ -96,8 +55,8 @@ resource "aws_iam_role" "plan_next_week_lambda_role" {
 
 # Attach the lambda policy to publish to SNS topic
 resource "aws_iam_role_policy" "lambda_sns_publish" {
-  name   = "lambda_sns_publish"
-  role   = aws_iam_role.plan_next_week_lambda_role.id
+  name = "lambda_sns_publish"
+  role = aws_iam_role.plan_next_week_lambda_role.id
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -110,6 +69,24 @@ resource "aws_iam_role_policy" "lambda_sns_publish" {
   })
 }
 
+resource "aws_iam_role_policy" "lambda_ssm_get_parameter" {
+  name = "lambda_ssm_get_parameter"
+  role = aws_iam_role.plan_next_week_lambda_role.id
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = [
+          "ssm:GetParameter",
+          "ssm:GetParameters"
+        ],
+        Effect   = "Allow",
+        Resource = "*"
+      }
+    ]
+  })
+}
+
 # Attach the AWSLambdaBasicExecutionRole policy to the IAM role to log to cloudwatch
 resource "aws_iam_role_policy_attachment" "lambda_logs" {
   role       = aws_iam_role.plan_next_week_lambda_role.name
@@ -118,15 +95,15 @@ resource "aws_iam_role_policy_attachment" "lambda_logs" {
 
 # Create the CloudWatch Event Rule for work agenda
 resource "aws_cloudwatch_event_rule" "plan_next_week_work_schedule" {
-  name        = "plan_next_week_work_schedule"
-  description = "Schedule for running the plan_next_week_lambda for work agenda"
+  name                = "plan_next_week_work_schedule"
+  description         = "Schedule for running the plan_next_week_lambda for work agenda"
   schedule_expression = "cron(0 4 * * ? 0)"
 }
 
 # Create the CloudWatch Event Rule for work personal
 resource "aws_cloudwatch_event_rule" "plan_next_week_personal_schedule" {
-  name        = "plan_next_week_personal_schedule"
-  description = "Schedule for running the plan_next_week_lambda for personal agenda"
+  name                = "plan_next_week_personal_schedule"
+  description         = "Schedule for running the plan_next_week_lambda for personal agenda"
   schedule_expression = "cron(0 4 * * ? 0)"
 }
 
@@ -137,7 +114,7 @@ resource "aws_cloudwatch_event_target" "plan_next_week_work_target" {
   arn       = aws_lambda_function.plan_next_week_lambda.arn
 
   input = jsonencode({
-    "agenda_id": var.googlecalendar_work_agenda_id
+    "agenda_id" : var.googlecalendar_work_agenda_id
   })
 }
 
@@ -148,7 +125,7 @@ resource "aws_cloudwatch_event_target" "plan_next_week_personal_target" {
   arn       = aws_lambda_function.plan_next_week_lambda.arn
 
   input = jsonencode({
-    "agenda_id": var.googlecalendar_personal_agenda_id
+    "agenda_id" : var.googlecalendar_personal_agenda_id
   })
 }
 

@@ -1,8 +1,3 @@
-# Reference parameter store of api_key
-data "aws_ssm_parameter" "notion_api_key" {
-  name = "/notion/api_key"
-}
-
 resource "aws_sns_topic" "autofill_urgent_project_lambda_error_topic" {
   name = "autofill_urgent_project_lambda_error_topic"
 }
@@ -15,19 +10,18 @@ resource "aws_sns_topic_subscription" "autofill_urgent_project_lambda_error_topi
 
 # Create the Lambda function
 resource "aws_lambda_function" "autofill_urgent_project_lambda" {
-  function_name = "autofill_urgent_project_lambda"
-  role          = aws_iam_role.autofill_urgent_project_lambda_role.arn
-  handler       = "omnilife_framework_automations.autofill_urgent_project_lambda.lambda_function.lambda_handler"
-  runtime       = "python3.11"
-  timeout       = 10
-  memory_size   = 128
-  publish       = true
-  filename      = "../dist/autofill_urgent_project.zip"
+  function_name    = "autofill_urgent_project_lambda"
+  role             = aws_iam_role.autofill_urgent_project_lambda_role.arn
+  handler          = "omnilife_framework_automations.autofill_urgent_project_lambda.lambda_function.lambda_handler"
+  runtime          = "python3.11"
+  timeout          = 10
+  memory_size      = 128
+  publish          = true
+  filename         = "../dist/autofill_urgent_project.zip"
   source_code_hash = filebase64sha256("../dist/autofill_urgent_project.zip")
   environment {
     variables = {
       NOTION_DATABASE_ID = "6be0dff3c0ea4c9a9fdec4f665a22a7a"
-      NOTION_API_KEY  = data.aws_ssm_parameter.notion_api_key.value
     }
   }
 }
@@ -61,8 +55,8 @@ resource "aws_iam_role" "autofill_urgent_project_lambda_role" {
 
 # Attach the lambda policy to publish to SNS topic
 resource "aws_iam_role_policy" "lambda_sns_publish" {
-  name   = "lambda_sns_publish"
-  role   = aws_iam_role.autofill_urgent_project_lambda_role.id
+  name = "lambda_sns_publish"
+  role = aws_iam_role.autofill_urgent_project_lambda_role.id
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -75,6 +69,24 @@ resource "aws_iam_role_policy" "lambda_sns_publish" {
   })
 }
 
+resource "aws_iam_role_policy" "lambda_ssm_get_parameter" {
+  name = "lambda_ssm_get_parameter"
+  role = aws_iam_role.autofill_urgent_project_lambda_role.id
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = [
+          "ssm:GetParameter",
+          "ssm:GetParameters"
+        ],
+        Effect   = "Allow",
+        Resource = "*"
+      }
+    ]
+  })
+}
+
 # Attach the AWSLambdaBasicExecutionRole policy to the IAM role to log to cloudwatch
 resource "aws_iam_role_policy_attachment" "lambda_logs" {
   role       = aws_iam_role.autofill_urgent_project_lambda_role.name
@@ -83,8 +95,8 @@ resource "aws_iam_role_policy_attachment" "lambda_logs" {
 
 # Create the CloudWatch Event Rule
 resource "aws_cloudwatch_event_rule" "autofill_urgent_project_schedule" {
-  name        = "autofill_urgent_project_schedule"
-  description = "Schedule for running the autofill_urgent_project_lambda"
+  name                = "autofill_urgent_project_schedule"
+  description         = "Schedule for running the autofill_urgent_project_lambda"
   schedule_expression = "cron(0 4 * * ? *)"
 }
 
@@ -103,3 +115,4 @@ resource "aws_lambda_permission" "allow_cloudwatch" {
   principal     = "events.amazonaws.com"
   source_arn    = aws_cloudwatch_event_rule.autofill_urgent_project_schedule.arn
 }
+

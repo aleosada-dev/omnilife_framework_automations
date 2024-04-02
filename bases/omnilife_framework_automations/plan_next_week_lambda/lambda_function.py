@@ -1,9 +1,10 @@
 import os
-import json
 from typing import Self
 from injector import Injector, inject
 from omnilife_framework_automations.event.modules import EventRepositoryModule
-from omnilife_framework_automations.parameter.modules import ParameterRepositoryModule
+from omnilife_framework_automations.parameter.modules import (
+    AWSParameterStoreRepositoryModule,
+)
 from omnilife_framework_automations.infrastructure.services import ITaskService
 from omnilife_framework_automations.task.modules import (
     TaskRepositoryModule,
@@ -17,7 +18,7 @@ def setup_injector():
         [
             TaskServiceModule(),
             TaskRepositoryModule(),
-            ParameterRepositoryModule(),
+            AWSParameterStoreRepositoryModule(),
             EventRepositoryModule(),
         ]
     )

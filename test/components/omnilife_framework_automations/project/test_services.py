@@ -48,9 +48,7 @@ def test_urgent_project_automation():
 
     # Call the function
     project_service = ProjectService(project_repository)
-    project_service.urgent_project_automation(
-        "sample_database_id", "sample_api_key", now
-    )
+    project_service.urgent_project_automation("sample_database_id", now)
 
     # Assert that the update_notion_page function is called with the correct arguments
     project_repository.update_notion_page.assert_called_with(

@@ -1,15 +1,23 @@
-from omnilife_framework_automations.infrastructure.repositories import (
+from typing import Self
+from injector import inject
+from omnilife_framework_automations.infrastructure.repositories.project import (
     IProjectRepository,
+)
+from omnilife_framework_automations.infrastructure.repositories.parameter import (
+    IParameterRepository,
 )
 import omnilife_framework_automations.notion.core as notion
 from omnilife_framework_automations.notion.helpers import NotionFilterBuilder
 
 
 class ProjectNotionRepository(IProjectRepository):
+    @inject
+    def __init__(self: Self, parameter_repository: IParameterRepository) -> None:
+        self.api_key = parameter_repository.get("NOTION_APIKEY")
+
     def query_pages(
         self,
         database_id: str,
-        api_key: str,
         filter_query: str = None,
         sort_query: str = None,
     ):
@@ -23,7 +31,7 @@ class ProjectNotionRepository(IProjectRepository):
             .end_group()
             .build()
         )
-        return notion.query_pages(database_id, api_key, filter_query, sort_query)
+        return notion.query_pages(database_id, self.api_key, filter_query, sort_query)
 
-    def update_notion_page(self, page_id: str, properties: dict, api_key: str):
-        notion.update_notion_page(page_id, properties, api_key)
+    def update_notion_page(self, page_id: str, properties: dict):
+        notion.update_notion_page(page_id, properties, self.api_key)

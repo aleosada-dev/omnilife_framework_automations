@@ -2,8 +2,10 @@ import pendulum
 from typing import Self
 from injector import inject
 from omnilife_framework_automations.event.entities import Event
-from omnilife_framework_automations.infrastructure.repositories import (
-    IEventRespository,
+from omnilife_framework_automations.infrastructure.repositories.event import (
+    IEventRepository,
+)
+from omnilife_framework_automations.infrastructure.repositories.task import (
     ITaskRepository,
 )
 from omnilife_framework_automations.infrastructure.services import ITaskService
@@ -33,7 +35,7 @@ class TaskService(ITaskService):
     @inject
     def __init__(
         self: Self,
-        event_repository: IEventRespository,
+        event_repository: IEventRepository,
         task_repository: ITaskRepository,
     ):
         self.task_repository = task_repository
@@ -44,9 +46,7 @@ class TaskService(ITaskService):
         start_min = today.to_iso8601_string()
         start_max = today.add(days=7).to_iso8601_string()
 
-        events = self.event_repository.get_events(
-            agenda_id, start_min, start_max 
-        )
+        events = self.event_repository.get_events(agenda_id, start_min, start_max)
         for event in events:
             task = map_event_to_task(task_database_id, event)
             self.task_repository.add_task(task)

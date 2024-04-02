@@ -1,8 +1,12 @@
 from injector import Injector
 from dotenv import load_dotenv
 from omnilife_framework_automations.event.modules import EventRepositoryModule
-from omnilife_framework_automations.infrastructure.repositories import ITaskRepository
-from omnilife_framework_automations.parameter.modules import ParameterRepositoryModule
+from omnilife_framework_automations.infrastructure.repositories.task import (
+    ITaskRepository,
+)
+from omnilife_framework_automations.parameter.modules import (
+    EnvironmentVariableParameterRepositoryModule,
+)
 from omnilife_framework_automations.task.modules import TaskRepositoryModule
 from omnilife_framework_automations.task.services import TaskService
 import pendulum
@@ -13,7 +17,11 @@ load_dotenv()
 
 def setup_injector():
     return Injector(
-        [TaskRepositoryModule(), ParameterRepositoryModule(), EventRepositoryModule()]
+        [
+            TaskRepositoryModule(),
+            EnvironmentVariableParameterRepositoryModule(),
+            EventRepositoryModule(),
+        ]
     )
 
 
