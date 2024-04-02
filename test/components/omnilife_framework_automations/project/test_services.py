@@ -54,5 +54,4 @@ def test_urgent_project_automation():
     project_repository.update_notion_page.assert_called_with(
         "sample_id_2",
         properties={"Urgent": {"checkbox": True}},
-        api_key="sample_api_key",
     )
