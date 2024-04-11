@@ -97,14 +97,14 @@ resource "aws_iam_role_policy_attachment" "lambda_logs" {
 resource "aws_cloudwatch_event_rule" "plan_next_week_work_schedule" {
   name                = "plan_next_week_work_schedule"
   description         = "Schedule for running the plan_next_week_lambda for work agenda"
-  schedule_expression = "cron(0 4 * * ? *)"
+  schedule_expression = "cron(0 4 ? * Sun *)"
 }
 
 # Create the CloudWatch Event Rule for work personal
 resource "aws_cloudwatch_event_rule" "plan_next_week_personal_schedule" {
   name                = "plan_next_week_personal_schedule"
   description         = "Schedule for running the plan_next_week_lambda for personal agenda"
-  schedule_expression = "cron(0 4 * * ? *)"
+  schedule_expression = "cron(0 4 ? * Sun *)"
 }
 
 # Create the CloudWatch Event Target for work agenda
