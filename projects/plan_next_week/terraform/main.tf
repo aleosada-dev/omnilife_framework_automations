@@ -27,7 +27,9 @@ resource "aws_lambda_function" "plan_next_week_lambda" {
 }
 
 resource "aws_lambda_function_event_invoke_config" "plan_next_week_lambda_event_invoke_config" {
-  function_name = aws_lambda_function.plan_next_week_lambda.function_name
+  function_name                = aws_lambda_function.plan_next_week_lambda.function_name
+  maximum_event_age_in_seconds = 60
+  maximum_retry_attempts       = 0
 
   destination_config {
     on_failure {
